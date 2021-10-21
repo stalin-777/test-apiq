@@ -7,6 +7,7 @@ import (
 	"github.com/juju/errors"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"github.com/stalin-777/test-apiq/internal/logger"
 )
 
 type Config struct {
@@ -14,25 +15,19 @@ type Config struct {
 		Host string `validate:"required"`
 		Port int    `validate:"required"`
 	}
-	Logger struct {
-		FileName       string `validate:"required"`
-		Path           string `validate:"required"`
-		MaxSize        int    `validate:"required"`
-		MaxRequestSize int    `validate:"required"`
-		MaxBackups     int    `validate:"required"`
-		MaxAge         int    `validate:"required"`
-	}
+	Logger     logger.Config `validate:"required"`
 	WorkersNum int
 	TTL        time.Duration `validate:"required"`
 }
 
-func Init() (*Config, error) {
+func New() (*Config, error) {
 
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 
-	cfg := &Config{}
-
+	cfg := &Config{
+		Logger: logger.Config{},
+	}
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, errors.Annotate(err, "Failed to load configuration file")
 	}

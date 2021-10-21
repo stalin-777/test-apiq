@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	apiq "github.com/stalin-777/test-apiq"
-	"github.com/stalin-777/test-apiq/logger"
+	"github.com/stalin-777/test-apiq/internal/logger"
 )
 
 type Handler struct {

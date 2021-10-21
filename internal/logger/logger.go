@@ -10,15 +10,23 @@ import (
 
 var loggerInstance *zap.Logger
 
+type Config struct {
+	Path       string
+	Filename   string
+	MaxSize    int
+	MaxBackups int
+	MaxAge     int
+}
+
 //InitZapLogger initialize zap logger
-func InitZapLogger(directory string, filename string, maxSize int, maxBackups int, maxAge int) error {
+func InitZapLogger(cfg Config) error {
 
 	//check if config is not null pointer
-	if directory == "" || filename == "" || maxSize <= 0 {
+	if cfg.Path == "" || cfg.Filename == "" || cfg.MaxSize <= 0 {
 		return errors.New("provide non-nil config")
 	}
 
-	writerSyncer := getLogWriter(directory, filename, maxSize, maxBackups, maxAge)
+	writerSyncer := getLogWriter(cfg)
 	encoder := getEncoder()
 	core := zapcore.NewCore(encoder, writerSyncer, zapcore.DebugLevel)
 
@@ -38,13 +46,13 @@ func getEncoder() zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(encoderConfig)
 }
 
-func getLogWriter(directory string, filename string, maxSize int, maxBackups int, maxAge int) zapcore.WriteSyncer {
+func getLogWriter(cfg Config) zapcore.WriteSyncer {
 
 	lumberJackLogger := &lumberjack.Logger{
-		Filename:   directory + "/" + filename,
-		MaxSize:    maxSize,
-		MaxBackups: maxBackups,
-		MaxAge:     maxAge,
+		Filename:   cfg.Path + "/" + cfg.Filename,
+		MaxSize:    cfg.MaxSize,
+		MaxBackups: cfg.MaxBackups,
+		MaxAge:     cfg.MaxAge,
 		Compress:   true,
 	}
 	return zapcore.AddSync(lumberJackLogger)

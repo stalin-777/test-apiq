@@ -31,21 +31,21 @@ func (s *TaskService) CreateTask(t *apiq.Task) error {
 }
 
 //DoTask - Calculates arithmetic progression
-func DoTask(t *apiq.Task) {
+func DoTask(s *apiq.Task) {
 
-	t.StartedAt = time.Now().Format(time.RFC3339)
-	t.State = apiq.StateInProgress
-	t.CurrentVal = t.StartValue
+	s.StartedAt = time.Now().Format(time.RFC3339)
+	s.State = apiq.StateInProgress
+	s.CurrentVal = s.StartValue
 
-	for i := 1; i <= t.NumElements; i++ {
+	for i := 1; i <= s.NumElements; i++ {
 
-		t.CurrentVal += t.Delta
-		t.CurrentIter++
-		<-time.NewTimer(time.Second * time.Duration(t.Interval)).C
+		s.CurrentVal += s.Delta
+		s.CurrentIter++
+		<-time.NewTimer(time.Second * time.Duration(s.Interval)).C
 	}
 
-	t.State = apiq.StateCompleted
-	t.CompletedAt = time.Now().Format(time.RFC3339)
+	s.State = apiq.StateCompleted
+	s.CompletedAt = time.Now().Format(time.RFC3339)
 }
 
 func prepareToPush(t *apiq.Task, ts *TaskService) {

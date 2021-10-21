@@ -19,3 +19,5 @@ func respondWithErrorStatus(c echo.Context, status int, errMsg string) error {
 func respondWithData(c echo.Context, data interface{}) error {
 	return c.JSON(http.StatusOK, &Response{Success: true, Data: data})
 }
+
+var ErrServerClosed = http.ErrServerClosed
